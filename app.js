@@ -1,35 +1,61 @@
-// Implementing module pattren in javascript
-// Budget Module
+// BUDGET MODULE
 let BudgetComponent = (function() {
 
 
 })();
 
-// UI Module
+
+// UI MODULE
 let UIComponent = (function () {
-    
+
+    let DOMStrings = {
+        inputType: '.add__type',
+        inputDescription: '.add__description',
+        inputValue: '.add__value',
+        inputButton: '.add__btn'
+    }
+
+    return {
+        publicGetInputData: function() {
+            return {
+                type: document.querySelector(DOMStrings.inputType).value,
+                description: document.querySelector(DOMStrings.inputDescription).value,
+                value: document.querySelector(DOMStrings.inputValue).value
+            }
+        },
+        publicGetDOMStrings: function() {
+            return DOMStrings;
+        }
+    }
 
 })();
 
-// Global App Module
+
+// APP MODULE
 let AppComponent = (function(budgetCpnt, uiCpnt) {
 
-    document.querySelector('.add__btn').addEventListener('click', function() {
-        console.log('clicked');
-    });
+    let setupEventListeners = function() {
+        let DOMStrings = uiCpnt.publicGetDOMStrings();
+        document.querySelector(DOMStrings.inputButton).addEventListener('click', appAddItem);
+        window.addEventListener('keypress', function(e) {
+            if (e.keyCode === 13 | e.which === 13) {
+                appAddItem();
+            }
+        });
+    }
 
-    window.addEventListener('keydown', function(e) {
-        this.console.log('keydown', e);
-    });
+    let appAddItem = function() {
+        let inputValues = uiCpnt.publicGetInputData();
+        console.log(inputValues);
+    }
 
-    window.addEventListener('keypress', function(e) {
-        this.console.log('keypress', e);
-    });
-
-    window.addEventListener('keyup', function(e) {
-        this.console.log('keyup', e);
-    });
+    return {
+        publicAppInit: function() {
+            setupEventListeners();
+        }
+    }
 
 })(BudgetComponent, UIComponent);
 
+AppComponent.publicAppInit();
 
