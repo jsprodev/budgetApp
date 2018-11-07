@@ -93,7 +93,6 @@ let UIComponent = (function () {
                                 </div>
                             </div>
                         </div>`;
-                console.log(html);
             } else if (type === 'exp') {    
                 element = DOMStrings.expensesContainer;
                 html = `<div class="item clearfix" id="expense-%id%">
@@ -106,7 +105,6 @@ let UIComponent = (function () {
                                 </div>
                             </div>
                         </div>`;
-                console.log(html);
             }
             // replace placeholder test with actual data
             newHtml = html.replace('%id%', obj.id);
@@ -114,6 +112,15 @@ let UIComponent = (function () {
             newHtml = newHtml.replace('%value%', obj.value);
             // insert the HTML to the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+        },
+        publicClearFields: function() {
+            let fields, fieldsArr;
+            fields =  document.querySelectorAll(DOMStrings.inputDescription + ',' + DOMStrings.inputValue);
+            fieldsArr = Array.prototype.slice.call(fields);
+            fieldsArr.forEach(function(current, index, array) {
+                current.value = "";
+            });
+            fieldsArr[0].focus();
         },
         publicGetDOMStrings: function() {
             return DOMStrings;
@@ -142,12 +149,14 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
         inputValues = uiCpnt.publicGetInputData();
         // 2. add the item to budget module
         newItem = budgetCpnt.publicAddItem(inputValues.type, inputValues.description, inputValues.value);
-        console.log(newItem);
+        // console.log(newItem);
         // 3. add the item on UI
         uiCpnt.publicAddListItem(newItem, inputValues.type);
-        // 4. calculate the budget
+        //  clear the field 
+        uiCpnt.publicClearFields();
+        // 5. calculate the budget
         
-        // 5. display the budget on UI
+        // 6. display the budget on UI
     }
 
     return {
