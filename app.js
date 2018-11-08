@@ -76,7 +76,7 @@ let UIComponent = (function () {
             return {
                 type: document.querySelector(DOMStrings.inputType).value,
                 description: document.querySelector(DOMStrings.inputDescription).value,
-                value: document.querySelector(DOMStrings.inputValue).value
+                value: parseFloat(document.querySelector(DOMStrings.inputValue).value)
             }
         },
         publicAddListItem: function(obj, type) {
@@ -143,20 +143,31 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
         });
     }
 
+    let appUpdateBudget = function() {
+
+        // 1. calculate the budget
+
+        // 2. return th budget
+        
+        // 3. display the budget on UI
+    }
+
     let appAddItem = function() {
         let inputValues, newItem;
+
         // 1. get the field input data
         inputValues = uiCpnt.publicGetInputData();
-        // 2. add the item to budget module
-        newItem = budgetCpnt.publicAddItem(inputValues.type, inputValues.description, inputValues.value);
-        // console.log(newItem);
-        // 3. add the item on UI
-        uiCpnt.publicAddListItem(newItem, inputValues.type);
-        //  clear the field 
-        uiCpnt.publicClearFields();
-        // 5. calculate the budget
-        
-        // 6. display the budget on UI
+        if(inputValues.description !== "" && !isNaN(inputValues.value) && inputValues.value > 0) {
+            // 2. add the item to budget module
+            newItem = budgetCpnt.publicAddItem(inputValues.type, inputValues.description, inputValues.value);
+            // console.log(newItem);
+            // 3. add the item on UI
+            uiCpnt.publicAddListItem(newItem, inputValues.type);
+            // 4. clear the field 
+            uiCpnt.publicClearFields();
+            // 5. calculate and update budget
+            appUpdateBudget();       
+        }
     }
 
     return {
