@@ -15,6 +15,14 @@ let BudgetComponent = (function() {
         this.value = value;
     }
 
+    let calculateTotal = function(type) {
+        let sum = 0;
+        data.allItems[type].forEach(function(current) {
+            sum += current.value;
+        });
+        data.total[type] = sum;
+    }
+
     // data structure: to store our exepenses, income, total expenses, total income
     let data = {
         allItems: {
@@ -24,7 +32,9 @@ let BudgetComponent = (function() {
         total: {
             exp: 0,
             inc: 0
-        }
+        }, 
+        budget: 0,
+        percentage: -1  // dosent exist at this point
     }
 
     return {
@@ -50,6 +60,27 @@ let BudgetComponent = (function() {
 
             // return the new item so that is accessible outside the module
             return newItem;
+        },
+        publicCalculateBudget: function() {
+            // calculate the total budget and income
+            calculateTotal('exp');
+            calculateTotal('inc');
+            // calcualte the total budget: income - expenses
+            data.budget = data.total.inc - data.total.exp;
+            // calculate the percentage of income what we spent
+            if (data.total.inc > 0) {
+                data.percentage = Math.round((data.total.exp / data.total.inc) * 100);
+            } else {
+                data.percentage = -1;
+            }
+        },
+        publicGetBudget: function() {
+            return {
+                budget: data.budget,
+                totalInc: data.total.inc,
+                totalExp: data.total.exp,
+                percentage: data.percentage
+            }
         },
         testing: function() {
             return data;
@@ -144,12 +175,12 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
     }
 
     let appUpdateBudget = function() {
-
         // 1. calculate the budget
-
-        // 2. return th budget
-        
+        budgetCpnt.publicCalculateBudget();
+        // 2. return / get the budget
+        let budget = budgetCpnt.publicGetBudget();
         // 3. display the budget on UI
+        console.log(budget);
     }
 
     let appAddItem = function() {
