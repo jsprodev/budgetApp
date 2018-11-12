@@ -99,7 +99,11 @@ let UIComponent = (function () {
         inputValue: '.add__value',
         inputButton: '.add__btn',
         incomeContainer: '.income__list',
-        expensesContainer: '.expenses__list'
+        expensesContainer: '.expenses__list',
+        budgetLabel: '.budget__value',
+        incomeLabel: '.budget__income--value',
+        expensesLael: '.budget__expenses--value',
+        percentageLabel: '.budget__expenses--percentage'
     }
 
     return {
@@ -153,6 +157,18 @@ let UIComponent = (function () {
             });
             fieldsArr[0].focus();
         },
+        publicDisplayBudget: function(obj) {
+            document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
+            document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc
+            document.querySelector(DOMStrings.expensesLael).textContent = obj.totalExp;
+            document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage;
+
+            if (obj.percentage > 0) {
+                document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + '%';
+            }   else {
+                document.querySelector(DOMStrings.percentageLabel).textContent = '---';
+            }
+        },
         publicGetDOMStrings: function() {
             return DOMStrings;
         }
@@ -180,7 +196,8 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
         // 2. return / get the budget
         let budget = budgetCpnt.publicGetBudget();
         // 3. display the budget on UI
-        console.log(budget);
+        uiCpnt.publicDisplayBudget(budget);
+        // console.log(budget);
     }
 
     let appAddItem = function() {
@@ -204,6 +221,12 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
     return {
         publicAppInit: function() {
             setupEventListeners();
+            uiCpnt.publicDisplayBudget({
+                budget: 0,
+                totalInc: 0,
+                totalExp: 0,
+                percentage: -1
+            });
             console.log('Application started');
         }
     }
