@@ -57,9 +57,19 @@ let BudgetComponent = (function() {
 
             // push the new item in data structure
             data.allItems[type].push(newItem);
-
+            console.log(data.allItems[type]);
             // return the new item so that is accessible outside the module
             return newItem;
+        },
+        publicDeleteItem: function(type, id) {
+            let ids, index;
+            ids = data.allItems[type].map(function(current) {
+                return current.id;
+            });
+            index = ids.indexOf(id);
+            if (index !== -1) {
+                data.allItems[type].splice(index, 1);
+            }
         },
         publicCalculateBudget: function() {
             // calculate the total budget and income
@@ -82,7 +92,7 @@ let BudgetComponent = (function() {
                 percentage: data.percentage
             }
         },
-        testing: function() {
+        publicTesting: function() {
             return data;
         }
     }
@@ -103,7 +113,8 @@ let UIComponent = (function () {
         budgetLabel: '.budget__value',
         incomeLabel: '.budget__income--value',
         expensesLael: '.budget__expenses--value',
-        percentageLabel: '.budget__expenses--percentage'
+        percentageLabel: '.budget__expenses--percentage',
+        container: '.container'
     }
 
     return {
@@ -119,7 +130,7 @@ let UIComponent = (function () {
             // html string with placeholder text 
             if (type === 'inc') {
                 element = DOMStrings.incomeContainer;
-                html  = `<div class="item clearfix" id="income-%id%">
+                html  = `<div class="item clearfix" id="inc-%id%">
                             <div class="item__description">%description%</div>
                             <div class="right clearfix">
                                 <div class="item__value">%value%</div>
@@ -130,7 +141,7 @@ let UIComponent = (function () {
                         </div>`;
             } else if (type === 'exp') {    
                 element = DOMStrings.expensesContainer;
-                html = `<div class="item clearfix" id="expense-%id%">
+                html = `<div class="item clearfix" id="exp-%id%">
                             <div class="item__description">%description%</div>
                             <div class="right clearfix">
                                 <div class="item__value">%value%</div>
@@ -188,6 +199,7 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
                 appAddItem();
             }
         });
+        document.querySelector(DOMStrings.container).addEventListener('click', appDeleteItem);
     }
 
     let appUpdateBudget = function() {
@@ -216,6 +228,18 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
             // 5. calculate and update budget
             appUpdateBudget();       
         }
+    }
+
+    let appDeleteItem = function(event) {
+        let itemID, splitID, type, ID;
+        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+        splitID = itemID.split('-');
+        type = splitID[0];
+        ID = parseInt(splitID[1]);
+        // 1. delete the item from the data structure. 
+        budgetCpnt.publicDeleteItem(type, ID);
+        // 2. delete the item from the UI.
+        // 3. update and display the new buget.
     }
 
     return {
