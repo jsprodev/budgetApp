@@ -159,6 +159,10 @@ let UIComponent = (function () {
             // insert the HTML to the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
         },
+        publicDeletelistItem: function(selectorID) {
+            let el = document.getElementById(selectorID);
+            el.parentNode.removeChild(el);
+        },
         publicClearFields: function() {
             let fields, fieldsArr;
             fields =  document.querySelectorAll(DOMStrings.inputDescription + ',' + DOMStrings.inputValue);
@@ -212,6 +216,12 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
         // console.log(budget);
     }
 
+    let appUpdatePercentages = function() {
+        // 1. calculate percentages  
+        // 2. read percentages from budget controller
+        // 3. update the UI with new percentages
+    }
+
     let appAddItem = function() {
         let inputValues, newItem;
 
@@ -226,7 +236,9 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
             // 4. clear the field 
             uiCpnt.publicClearFields();
             // 5. calculate and update budget
-            appUpdateBudget();       
+            appUpdateBudget(); 
+            // 6. calculate and update percentages     
+            appUpdatePercentages(); 
         }
     }
 
@@ -239,7 +251,11 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
         // 1. delete the item from the data structure. 
         budgetCpnt.publicDeleteItem(type, ID);
         // 2. delete the item from the UI.
+        uiCpnt.publicDeletelistItem(itemID);
         // 3. update and display the new buget.
+        appUpdateBudget();       
+        // 4. calculate and update percentages     
+        appUpdatePercentages(); 
     }
 
     return {
