@@ -6,6 +6,21 @@ let BudgetComponent = (function() {
         this.id = id;
         this.description = description;
         this.value = value;
+        this.percentage = -1;
+    }
+
+    // method to calculate percentage
+    Expense.prototype.calcPercentage = function(totalIncome) {
+        if (totalIncome > 0) {
+            this.percentage = Math.round((this.value / totalIncome) * 100);
+        } else {
+            this.percentage = -1;
+        }
+    }
+
+    // method to get percentage
+    Expense.prototype.getPercentage = function() {
+        return this.percentage;
     }
     
     // constructor function for income
@@ -83,6 +98,17 @@ let BudgetComponent = (function() {
             } else {
                 data.percentage = -1;
             }
+        },
+        publicCalculatePercentages: function() {
+             data.allItems.exp.forEach(function(current){
+                current.calcPercentage(data.total.inc); 
+             });
+        },
+        pulicGetPercentages: function() {
+            let allPerc = data.allItems.exp.map(function(current) {
+                return current.getPercentage();
+            });
+            return allPerc;
         },
         publicGetBudget: function() {
             return {
@@ -218,8 +244,11 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
 
     let appUpdatePercentages = function() {
         // 1. calculate percentages  
-        // 2. read percentages from budget controller
+        budgetCpnt.publicCalculatePercentages();
+        // 2. read / get percentages from budget controller
+        let percentages = budgetCpnt.pulicGetPercentages();
         // 3. update the UI with new percentages
+        console.log(percentages);
     }
 
     let appAddItem = function() {
