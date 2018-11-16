@@ -140,7 +140,8 @@ let UIComponent = (function () {
         incomeLabel: '.budget__income--value',
         expensesLael: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
-        container: '.container'
+        container: '.container',
+        expensePercentageLabel: '.item__percentage'
     }
 
     return {
@@ -210,6 +211,26 @@ let UIComponent = (function () {
                 document.querySelector(DOMStrings.percentageLabel).textContent = '---';
             }
         },
+        publicGetPercentages: function(percentages) {
+            let fields = document.querySelectorAll(DOMStrings.expensePercentageLabel);
+
+            // writing our own forEach method for nodeList as aboev variable 'fields' is not an arrya but a nodeList
+            nodeListforEach = function(nodeList, callback) {
+               for (let i = 0; i < nodeList.length; i ++) {
+                    callback(nodeList[i], i);   // callback(current, index)
+               } 
+            }
+
+            // calling nodeListforEach
+            nodeListforEach(fields, function(current, index) {
+                if (percentages[index] > 0) {
+                    current.textContent = percentages[index] + '%';
+                } else {
+                    current.textContent = '---';
+                }
+            });
+
+        },
         publicGetDOMStrings: function() {
             return DOMStrings;
         }
@@ -248,7 +269,8 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
         // 2. read / get percentages from budget controller
         let percentages = budgetCpnt.pulicGetPercentages();
         // 3. update the UI with new percentages
-        console.log(percentages);
+        uiCpnt.publicGetPercentages(percentages);
+        // console.log(percentages);
     }
 
     let appAddItem = function() {
