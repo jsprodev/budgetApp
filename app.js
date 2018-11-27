@@ -144,6 +144,26 @@ let UIComponent = (function () {
         expensePercentageLabel: '.item__percentage'
     }
 
+    let formatNumber =  function(num, type) {
+        //  + for income - for expense e.g +28.50
+        //  2 decimal points e.g 15.00
+        //  comma after 3 digits e.g 1,000.00
+        let numSplit, int, dec, sign;
+
+        num = Math.abs(num);
+        num = num.toFixed(2); // toFixed return a string
+        numSplit = num.split('.'); // reeturn an array
+        int = numSplit[0];
+        dec = numSplit[1];
+        
+        if(int.length > 3) {
+            int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, 3);
+        }
+
+        type === 'exp' ? sign = '-' : sign = '+';
+        return sign + ' ' + int + '.' + dec;
+    }
+
     return {
         publicGetInputData: function() {
             return {
@@ -182,7 +202,7 @@ let UIComponent = (function () {
             // replace placeholder test with actual data
             newHtml = html.replace('%id%', obj.id);
             newHtml = newHtml.replace('%description%', obj.description);
-            newHtml = newHtml.replace('%value%', obj.value);
+            newHtml = newHtml.replace('%value%', formatNumber(obj.value, type));
             // insert the HTML to the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
         },
@@ -200,9 +220,12 @@ let UIComponent = (function () {
             fieldsArr[0].focus();
         },
         publicDisplayBudget: function(obj) {
-            document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
-            document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc
-            document.querySelector(DOMStrings.expensesLael).textContent = obj.totalExp;
+            let type;
+
+            obj.budget > 0 ? type = 'inc' : type = 'exp';
+            document.querySelector(DOMStrings.budgetLabel).textContent = formatNumber(obj.budget, type);
+            document.querySelector(DOMStrings.incomeLabel).textContent = formatNumber(obj.totalInc, 'inc')
+            document.querySelector(DOMStrings.expensesLael).textContent = formatNumber(obj.totalExp, 'exp');
             document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage;
 
             if (obj.percentage > 0) {
