@@ -141,7 +141,8 @@ let UIComponent = (function () {
         expensesLael: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
-        expensePercentageLabel: '.item__percentage'
+        expensePercentageLabel: '.item__percentage',
+        dateLabel: '.budget__title--month'
     }
 
     let formatNumber =  function(num, type) {
@@ -254,6 +255,14 @@ let UIComponent = (function () {
             });
 
         },
+        publicDisplayMonth: function() {
+            let now, month, months, year;
+            months = ['January', 'Feruary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            now = new Date();
+            month = now.getMonth();
+            year = now.getFullYear(); 
+            document.querySelector(DOMStrings.dateLabel).textContent = months[month] + ' ' + year;
+        },
         publicGetDOMStrings: function() {
             return DOMStrings;
         }
@@ -334,6 +343,8 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
 
     return {
         publicAppInit: function() {
+            console.log('Application started');
+            uiCpnt.publicDisplayMonth();
             setupEventListeners();
             uiCpnt.publicDisplayBudget({
                 budget: 0,
@@ -341,7 +352,6 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
                 totalExp: 0,
                 percentage: -1
             });
-            console.log('Application started');
         }
     }
 
