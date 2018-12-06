@@ -165,6 +165,13 @@ let UIComponent = (function () {
         return sign + ' ' + int + '.' + dec;
     }
 
+    // writing our own forEach method for nodeList as aboev variable 'fields' is not an arrya but a nodeList
+    nodeListforEach = function(nodeList, callback) {
+        for (let i = 0; i < nodeList.length; i ++) {
+                callback(nodeList[i], i);   // callback(current, index)
+        } 
+    }
+
     return {
         publicGetInputData: function() {
             return {
@@ -238,13 +245,6 @@ let UIComponent = (function () {
         publicGetPercentages: function(percentages) {
             let fields = document.querySelectorAll(DOMStrings.expensePercentageLabel);
 
-            // writing our own forEach method for nodeList as aboev variable 'fields' is not an arrya but a nodeList
-            nodeListforEach = function(nodeList, callback) {
-               for (let i = 0; i < nodeList.length; i ++) {
-                    callback(nodeList[i], i);   // callback(current, index)
-               } 
-            }
-
             // calling nodeListforEach
             nodeListforEach(fields, function(current, index) {
                 if (percentages[index] > 0) {
@@ -262,6 +262,13 @@ let UIComponent = (function () {
             month = now.getMonth();
             year = now.getFullYear(); 
             document.querySelector(DOMStrings.dateLabel).textContent = months[month] + ' ' + year;
+        },
+        publicChangeType: function() {
+            let nodeList = document.querySelectorAll(DOMStrings.inputType + ',' +  DOMStrings.inputDescription + ',' + DOMStrings.inputValue);
+            nodeListforEach(nodeList, function(current) {
+                current.classList.toggle('red-focus');
+            });
+            document.querySelector(DOMStrings.inputButton).classList.toggle('red');
         },
         publicGetDOMStrings: function() {
             return DOMStrings;
@@ -283,6 +290,7 @@ let AppComponent = (function(budgetCpnt, uiCpnt) {
             }
         });
         document.querySelector(DOMStrings.container).addEventListener('click', appDeleteItem);
+        document.querySelector(DOMStrings.inputType).addEventListener('change', uiCpnt.publicChangeType);
     }
 
     let appUpdateBudget = function() {
